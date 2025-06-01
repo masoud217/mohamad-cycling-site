@@ -1,0 +1,206 @@
+﻿You
+سلام
+آدرس ایمیل و پسورد آن را نیاز دارم
+
+const sheetName = 'Sheet1';
+
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  const data = JSON.parse(e.postData.contents);
+  sheet.appendRow([new Date(), data.name, data.message, data.image || '', data.video || '']);
+  return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>رکورد دوچرخه‌سواری من</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      transition: direction 0.3s;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      background: #eee;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    nav button {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    section {
+      padding: 2rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .comment {
+      background: #fff;
+      border: 1px solid #ccc;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+    .lang-toggle {
+      float: left;
+      margin-top: -3rem;
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="site-title">رکورد دوچرخه‌سواری من</h1>
+    <div class="lang-toggle">
+      <button onclick="toggleLang()">🌐 فارسی / English</button>
+    </div>
+  </header>
+
+  <nav>
+    <button onclick="scrollToSection('about')">🏁 معرفی</button>
+    <button onclick="scrollToSection('form')">📝 ثبت نظر</button>
+    <button onclick="scrollToSection('comments')">💬 نظرات</button>
+    <button onclick="scrollToSection('contact')">📞 تماس</button>
+  </nav>
+
+  <section id="about">
+    <h2 id="about-title">درباره رکورد</h2>
+    <p id="about-text">
+      من در تلاش هستم رکوردی در زمینه دوچرخه‌سواری به ثبت برسانم. این سایت برای معرفی این رکورد و جذب حمایت ایجاد شده است.
+    </p>
+  </section>
+
+  <section id="form">
+    <h2 id="form-title">ثبت نظر</h2>
+    <form id="commentForm">
+      <label id="name-label">نام:</label>
+      <input type="text" name="name" required>
+
+      <label id="message-label">پیام:</label>
+      <textarea name="message" required></textarea>
+
+      <label id="image-label">لینک تصویر (اختیاری):</label>
+      <input type="url" name="image">
+
+      <label id="video-label">لینک ویدیو (اختیاری):</label>
+      <input type="url" name="video">
+
+      <button type="submit" style="margin-top:1rem;">ارسال</button>
+    </form>
+  </section>
+
+  <section id="comments">
+    <h2 id="comments-title">نظرات کاربران</h2>
+    <div id="commentList">در حال بارگذاری نظرات...</div>
+  </section>
+
+  <section id="contact">
+    <h2 id="contact-title">تماس با من</h2>
+    <p><strong>📧 ایمیل:</strong> <a href="mailto:m1961r1340632@gmail.com">m1961r1340632@gmail.com</a></p>
+    <p><strong>📞 شماره:</strong> <a href="tel:+989121831998">+989121831998</a></p>
+  </section>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz0rL7bS7xXjZBEqQuKS_Y2sqdCUt78NHNGzVI5xoWzd3Uc-uxHsoCvhdMQx3Whvte7/exec";
+    const form = document.getElementById("commentForm");
+    const commentList = document.getElementById("commentList");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      form.reset();
+      loadComments();
+    });
+
+    async function loadComments() {
+      commentList.innerHTML = "در حال بارگذاری...";
+      const res = await fetch(scriptURL);
+      const comments = await res.json();
+      commentList.innerHTML = "";
+      comments.reverse().forEach(c => {
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerHTML = `
+          <strong>${c.name}</strong><br/>
+          <p>${c.message}</p>
+          ${c.image ? <img src="${c.image}" width="200"/> : ""}
+          ${c.video ? <video src="${c.video}" width="200" controls></video> : ""}
+        `;
+        commentList.appendChild(div);
+      });
+    }
+
+    loadComments();
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    // زبان‌ها
+    let currentLang = "fa";
+    const translations = {
+      fa: {
+        "site-title": "رکورد دوچرخه‌سواری من",
+        "about-title": "درباره رکورد",
+        "about-text": "من در تلاش هستم رکوردی در زمینه دوچرخه‌سواری به ثبت برسانم...",
+        "form-title": "ثبت نظر",
+        "name-label": "نام:",
+        "message-label": "پیام:",
+        "image-label": "لینک تصویر (اختیاری):",
+        "video-label": "لینک ویدیو (اختیاری):",
+        "comments-title": "نظرات کاربران",
+        "contact-title": "تماس با من"
+      },
+      en: {
+        "site-title": "My Cycling Record",
+        "about-title": "About the Record",
+        "about-text": "I'm trying to set a new cycling record. This site is created to introduce the effort and get support.",
+        "form-title": "Submit a Comment",
+        "name-label": "Name:",
+        "message-label": "Message:",
+        "image-label": "Image URL (optional):",
+        "video-label": "Video URL (optional):",
+        "comments-title": "User Comments",
+        "contact-title": "Contact Me"
+      }
+    };
+
+    function toggleLang() {
+      currentLang = currentLang === "fa" ? "en" : "fa";
+      document.documentElement.lang = currentLang;
+      document.body.dir = currentLang === "fa" ? "rtl" : "ltr";
+      const t = translations[currentLang];
+      for (let id in t) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = t[id];
+      }
+    }
+  </script>
+</body>
+</html>
+
