@@ -1,162 +1,152 @@
-<!DOCTYPE html><html lang="fa">
+
+<!DOCTYPE html><html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>رکورد دوچرخه‌سواری</title>
+  <title>رکورد دوچرخه‌سواری | Cycling Record</title>
   <style>
     body {
       font-family: sans-serif;
-      direction: rtl;
       margin: 0;
       padding: 0;
-      background: #f3f3f3;
+      direction: rtl;
     }
     header {
-      background: #4caf50;
+      background-color: #0d6efd;
       color: white;
-      padding: 10px;
+      padding: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     nav a {
+      margin: 0 1rem;
       color: white;
-      margin: 0 10px;
       text-decoration: none;
       font-weight: bold;
     }
-    .lang-toggle {
+    .lang-switch {
       cursor: pointer;
       background: white;
-      color: #4caf50;
+      color: #0d6efd;
       border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
+      padding: 0.3rem 1rem;
+      font-weight: bold;
     }
-    .section {
-      padding: 20px;
+    section {
+      padding: 1.5rem;
     }
     #gallery img, #gallery video {
-      max-width: 100%;
-      margin: 10px 0;
-      border-radius: 10px;
+      max-width: 200px;
+      margin: 10px;
     }
-    form input, form textarea, form button {
+    form {
+      margin-top: 1rem;
+    }
+    input, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
     }
-    #adminUpload {
-      display: none;
+    #comments {
+      margin-top: 2rem;
+    }
+    footer {
+      background: #f8f9fa;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <nav>
-      <a href="#intro" data-i18n="menu.intro">معرفی</a>
-      <a href="#gallery" data-i18n="menu.gallery">گالری</a>
-      <a href="#comments" data-i18n="menu.comments">نظرات</a>
-    </nav>
-    <button class="lang-toggle" onclick="toggleLang()">English</button>
-  </header>  <section class="section" id="intro">
-    <h2 data-i18n="intro.title">ثبت رکورد دوچرخه‌سواری</h2>
-    <p data-i18n="intro.desc">من قصد دارم یک رکورد دوچرخه‌سواری ثبت کنم. برای این مسیر نیاز به حمایت دارم.</p>
-    <p><strong data-i18n="contact.phone">تلفن:</strong> +989121831998</p>
-    <p><strong data-i18n="contact.email">ایمیل:</strong> m1961r1340632@gmail.com</p>
-  </section>  <section class="section" id="gallery">
-    <h2 data-i18n="gallery.title">تصاویر و ویدیوها</h2>
-    <img src="https://via.placeholder.com/600x300" alt="نمونه عکس" />
-    <video controls src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
-  </section>  <section class="section" id="comments">
-    <h2 data-i18n="comments.title">ثبت نظر</h2>
-    <form id="commentForm">
-      <input name="name" placeholder="نام" data-i18n-placeholder="comments.name" required />
-      <textarea name="message" placeholder="پیام شما" data-i18n-placeholder="comments.message" required></textarea>
-      <button type="submit" data-i18n="comments.submit">ثبت نظر</button>
+    <div>
+      <nav>
+        <a href="#intro" data-i18n="intro">معرفی</a>
+        <a href="#gallery" data-i18n="gallery">گالری</a>
+        <a href="#comments" data-i18n="comments">نظرات</a>
+      </nav>
+    </div>
+    <button class="lang-switch" onclick="toggleLanguage()">English</button>
+  </header>  <section id="intro">
+    <h2 data-i18n="intro">معرفی</h2>
+    <p data-i18n="intro_text">
+      من در تلاش هستم رکورد طولانی‌ترین مسیر دوچرخه‌سواری در <strong>کانادا</strong> را به ثبت برسانم. هدف من، الهام‌بخشی به دیگران برای فعالیت‌های سالم و جذب حمایت برای ادامه این مسیر است.
+    </p>
+  </section>  <section id="gallery">
+    <h2 data-i18n="gallery">گالری</h2>
+    <div id="media-container">
+      <!-- تصاویر و ویدیوها در اینجا نمایش داده می‌شود -->
+    </div>
+  </section>  <section id="comments">
+    <h2 data-i18n="comments">نظرات</h2>
+    <form id="comment-form">
+      <input type="text" name="name" placeholder="نام شما" required data-i18n-placeholder="your_name">
+      <textarea name="comment" placeholder="نظر شما..." required data-i18n-placeholder="your_comment"></textarea>
+      <button type="submit" data-i18n="submit">ارسال نظر</button>
     </form>
-    <div id="commentsList"></div>
-  </section>  <section class="section" id="adminUpload">
-    <h2 data-i18n="upload.title">بارگذاری فایل (فقط مدیر)</h2>
-    <input type="password" id="adminPass" placeholder="رمز ورود مدیر" />
-    <input type="file" id="fileInput" />
-    <button onclick="uploadFile()" data-i18n="upload.send">ارسال فایل</button>
-    <p id="uploadStatus"></p>
-  </section>  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbz0rL7bS7xXjZBEqQuKS_Y2sqdCUt78NHNGzVI5xoWzd3Uc-uxHsoCvhdMQx3Whvte7/exec";
-    const adminPassword = "admin123";
-
-    document.getElementById("adminPass").addEventListener("input", (e) => {
-      if (e.target.value === adminPassword) {
-        document.getElementById("fileInput").style.display = "block";
-      }
-    });
-
-    async function uploadFile() {
-      const file = document.getElementById("fileInput").files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const b64 = e.target.result.split(",")[1];
-        const form = new FormData();
-        form.append("fileData", b64);
-        form.append("mimeType", file.type);
-        form.append("fileName", file.name);
-
-        const res = await fetch(scriptURL, { method: "POST", body: form });
-        const text = await res.text();
-        document.getElementById("uploadStatus").innerText = text.includes("http") ? "آپلود موفق" : "خطا در آپلود";
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById("commentForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const name = e.target.name.value;
-      const message = e.target.message.value;
-      const div = document.createElement("div");
-      div.innerHTML = <strong>${name}</strong><p>${message}</p><hr>;
-      document.getElementById("commentsList").prepend(div);
-      e.target.reset();
-    });
-
-    let currentLang = "fa";
+    <div id="comment-list"></div>
+  </section>  <footer>
+    <p data-i18n="contact">تماس با من: m1961r1340632@gmail.com | +989121831998</p>
+  </footer>  <script>
     const translations = {
       en: {
-        "menu.intro": "Intro",
-        "menu.gallery": "Gallery",
-        "menu.comments": "Comments",
-        "intro.title": "Cycling Record",
-        "intro.desc": "I'm going to register a cycling record and need support.",
-        "contact.phone": "Phone:",
-        "contact.email": "Email:",
-        "gallery.title": "Photos & Videos",
-        "comments.title": "Leave a Comment",
-        "comments.name": "Name",
-        "comments.message": "Your message",
-        "comments.submit": "Submit",
-        "upload.title": "Upload (Admin only)",
-        "upload.send": "Send File"
+        intro: "Intro",
+        gallery: "Gallery",
+        comments: "Comments",
+        intro_text: "I am working to set the record for the longest cycling journey in <strong>Canada</strong>. My goal is to inspire others to pursue healthy activities and attract support to continue this journey.",
+        submit: "Submit",
+        your_name: "Your name",
+        your_comment: "Your comment...",
+        contact: "Contact me: m1961r1340632@gmail.com | +989121831998"
       },
-      fa: {}
+      fa: {
+        intro: "معرفی",
+        gallery: "گالری",
+        comments: "نظرات",
+        intro_text: "من در تلاش هستم رکورد طولانی‌ترین مسیر دوچرخه‌سواری در <strong>کانادا</strong> را به ثبت برسانم. هدف من، الهام‌بخشی به دیگران برای فعالیت‌های سالم و جذب حمایت برای ادامه این مسیر است.",
+        submit: "ارسال نظر",
+        your_name: "نام شما",
+        your_comment: "نظر شما...",
+        contact: "تماس با من: m1961r1340632@gmail.com | +989121831998"
+      }
     };
 
-    function toggleLang() {
+    let currentLang = "fa";
+
+    function toggleLanguage() {
       currentLang = currentLang === "fa" ? "en" : "fa";
       document.documentElement.lang = currentLang;
-      document.body.style.direction = currentLang === "fa" ? "rtl" : "ltr";
-      document.querySelector(".lang-toggle").innerText = currentLang === "fa" ? "English" : "فارسی";
+      document.documentElement.dir = currentLang === "fa" ? "rtl" : "ltr";
+      document.querySelector(".lang-switch").textContent = currentLang === "fa" ? "English" : "فارسی";
+
       document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
-        if (translations[currentLang][key]) el.innerText = translations[currentLang][key];
+        el.innerHTML = translations[currentLang][key];
       });
       document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
         const key = el.getAttribute("data-i18n-placeholder");
-        if (translations[currentLang][key]) el.setAttribute("placeholder", translations[currentLang][key]);
+        el.placeholder = translations[currentLang][key];
       });
     }
+
+    // ذخیره و نمایش نظرات
+    const form = document.getElementById("comment-form");
+    const commentList = document.getElementById("comment-list");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const comment = form.comment.value.trim();
+      if (name && comment) {
+        const div = document.createElement("div");
+        div.innerHTML = <strong>${name}</strong>: ${comment};
+        commentList.prepend(div);
+        form.reset();
+      }
+    });
   </script></body>
 </html>
+
+
+
